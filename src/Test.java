@@ -11,7 +11,7 @@ import jp.junkato.kotosaka.Token;
 public class Test {
 
 	public static void main(String[] args) {
-		String script = "print (1+2*3-4)%5*6/7; test = 8; print test + 3;";
+		String script = "print (1+2*3-4)%5*6/7;";
 
 		ArrayList<Char> characters = new ArrayList<Char>();
 		for (int i = 0; i < script.length(); i ++) {

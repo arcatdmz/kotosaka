@@ -10,7 +10,7 @@ public class MulExpression extends CalcExpression {
 
 	public Object evaluate(Context context) {
 		super.evaluate(context);
-		if (!getInt()) return null;
-		return new Integer(op1i * op2i);
+		if (!getNumber()) return null;
+		return new Float(op1f * op2f);
 	}
 }

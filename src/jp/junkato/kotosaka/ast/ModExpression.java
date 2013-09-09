@@ -10,7 +10,7 @@ public class ModExpression extends CalcExpression {
 
 	public Object evaluate(Context context) {
 		super.evaluate(context);
-		if (!getInt()) return null;
-		return Integer.valueOf(op1i % op2i);
+		if (!getNumber()) return null;
+		return Float.valueOf(op1f % op2f);
 	}
 }

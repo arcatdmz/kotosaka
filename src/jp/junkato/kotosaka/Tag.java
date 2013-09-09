@@ -7,7 +7,7 @@ import java.awt.Color;
  * タグの値
  */
 public class Tag {
-  public final static int tagInteger = 0;	// 整数
+  public final static int tagNumber = 0;	// 整数
   public final static int tagString = 1;	// 文字列
   public final static int tagCharacter = 2;	// 文字
   public final static int tagName = 3;		// 名前
@@ -15,7 +15,7 @@ public class Tag {
   public final static int tagSystem = 5;	// システム記号
   public final static int tagEnd = 10;		// 終了マーク
   private final static String[] TAG_NAMES = {
-	"Integer",
+	"Number",
 	"String",
 	"Character",
 	"Name",

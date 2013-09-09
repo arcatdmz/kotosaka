@@ -665,7 +665,7 @@ public class KotosakaParser {
 
 		Expression expr = parseExprBracket();
 		if (op == '-')
-			return makeOperation(op, new IntegerLiteral(0), expr);
+			return makeOperation(op, new NumberLiteral(0), expr);
 		return expr;
 	}
 
@@ -688,9 +688,9 @@ public class KotosakaParser {
 
 		// literal
 		Token tokLiteral = token;
-		if (token.getTag() == Tag.tagInteger) {
+		if (token.getTag() == Tag.tagNumber) {
 			getNextToken();
-			return new IntegerLiteral(tokLiteral.value);
+			return new NumberLiteral(tokLiteral.value);
 		} else if (token.getTag() == Tag.tagString) {
 			getNextToken();
 			return new StringLiteral(tokLiteral.value);
@@ -772,20 +772,20 @@ public class KotosakaParser {
 		if (accessor instanceof VariableAccess) {
 			String name = (String) accessor.getOperand(0);
 			Expression expr = new VariableAssign(name, makeOperation(op,
-					accessor, new IntegerLiteral(1)));
+					accessor, new NumberLiteral(1)));
 			if (pre)
 				return expr;
-			return makeOperation(op, expr, new IntegerLiteral(-1));
+			return makeOperation(op, expr, new NumberLiteral(-1));
 		} else if (accessor instanceof FieldAccess) {
 			Expression var = (Expression) accessor.getOperand(0);
 			String name = (String) accessor.getOperand(1);
 			// 得た中身(VariableAccessかFieldAccess)が持つフィールドに、
 			// 元のFieldAccessの値と1の演算結果を代入するFieldAssign
 			Expression expr = new FieldAssign(accessor, name, makeOperation(
-					op, var, new IntegerLiteral(1)));
+					op, var, new NumberLiteral(1)));
 			if (pre)
 				return expr;
-			return makeOperation(op, expr, new IntegerLiteral(-1));
+			return makeOperation(op, expr, new NumberLiteral(-1));
 		}
 		// パースエラー: 前置演算子のあとに関数やメソッドの呼び出しなど
 		return null;

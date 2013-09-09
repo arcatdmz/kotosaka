@@ -10,9 +10,9 @@ public class Token {
 	private int index;
 	private int length;
 
-	public Token(Integer i, int index, int length) {
-		value = i;
-		tag = Tag.tagInteger;
+	public Token(Float number, int index, int length) {
+		value = number;
+		tag = Tag.tagNumber;
 		initialize(index, length);
 	}
 

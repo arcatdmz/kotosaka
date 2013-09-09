@@ -8,8 +8,8 @@ import jp.junkato.kotosaka.Context;
 public abstract class CalcExpression extends Expression {
 	protected Object op1;
 	protected Object op2;
-	protected int op1i;
-	protected int op2i;
+	protected float op1f;
+	protected float op2f;
 	public CalcExpression(Object op1, Object op2) {
 		operands.add(op1);
 		operands.add(op2);
@@ -19,11 +19,11 @@ public abstract class CalcExpression extends Expression {
 		op2 = ((Expression) operands.get(1)).evaluate(context);
 		return null;
 	}
-	protected boolean getInt() {
-		if (!(op1 instanceof Integer)) return false;
-		if (!(op2 instanceof Integer)) return false;
-		op1i = ((Integer) op1).intValue();
-		op2i = ((Integer) op2).intValue();
+	protected boolean getNumber() {
+		if (!(op1 instanceof Float)) return false;
+		if (!(op2 instanceof Float)) return false;
+		op1f = ((Float) op1).floatValue();
+		op2f = ((Float) op2).floatValue();
 		return true;
 	}
 }

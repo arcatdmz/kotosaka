@@ -91,14 +91,15 @@ public class KotosakaReader {
 		int tokenLength = 0;
 		StringBuffer str = new StringBuffer();
 		for (; index < length; getChar()) {
-			if (!Character.isDigit(nextChar()))
+			if (!Character.isDigit(nextChar())
+					&& nextChar() != '.')
 				break;
 			str.append(ch);
 			tokenLength++;
 		}
 		str.append(ch);
 		tokenLength++;
-		final Token token = new Token(Integer.valueOf(str.toString()),
+		final Token token = new Token(Float.valueOf(str.toString()),
 				startIndex, tokenLength);
 		setCharactersParentToken(token, startIndex);
 		return token;

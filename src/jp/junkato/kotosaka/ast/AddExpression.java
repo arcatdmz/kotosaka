@@ -10,8 +10,10 @@ public class AddExpression extends CalcExpression {
 
 	public Object evaluate(Context context) {
 		super.evaluate(context);
-		if (op1 instanceof Integer) return Integer.valueOf(((Integer) op1).intValue() + ((Integer) op2).intValue());
-		return (op1==null?String.valueOf(op1i):op1.toString()) +
-			(op2==null?String.valueOf(op2i):op2.toString());
+		if (getNumber()) {
+			return Float.valueOf(op1f + op2f);
+		}
+		return (op1 == null ? "" : op1.toString()) +
+			(op2 == null ? "" : op2.toString());
 	}
 }
