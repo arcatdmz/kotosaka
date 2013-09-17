@@ -10,7 +10,10 @@ public class PowExpression extends CalcExpression {
 
 	public Object evaluate(Context context) {
 		super.evaluate(context);
-		if (!getNumber()) return null;
-		return new Float(Math.pow(op1f, op2f));
+		if (prepareCalc()) {
+			if (op1f != null && op2f != null)
+				return Float.valueOf((float) Math.pow(op1f, op2f));
+		}
+		return null;
 	}
 }

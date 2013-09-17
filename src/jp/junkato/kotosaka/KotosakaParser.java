@@ -202,12 +202,17 @@ public class KotosakaParser {
 		if (getNextToken().equals('{')) {
 			getNextToken();
 			instructions = parseInternal();
-		} else
+		} else {
 			instructions.add(getInstruction());
+		}
 
 		// else
-		getNextToken();
-		if ((token.getTag() == Tag.tagSystem)
+		if ((token.getTag() != Tag.tagSystem)
+				|| (RESERVED) token.value != RESERVED.SYS_ELSE) {
+			getNextToken();
+		}
+		if (token != null
+				&& (token.getTag() == Tag.tagSystem)
 				&& (RESERVED) token.value == RESERVED.SYS_ELSE) {
 			List<Evaluator> instructionsElse = new ArrayList<Evaluator>();
 			if (getNextToken().equals('{')) {
@@ -424,6 +429,7 @@ public class KotosakaParser {
 	 * @param leftExpression Already parsed expression of variable or field access.
 	 */
 	private Expression parseName(Expression leftExpression) {
+		Expression expr = null;
 
 		// Object instantiation.
 		if (token.getTag() == Tag.tagSystem &&
@@ -438,16 +444,7 @@ public class KotosakaParser {
 				if (token.equals('('))
 				{
 					getNextToken();
-					final Expression expr =
-							new NewExpression(
-									className, parseExpressions());
-					/*
-					if (token.equals(';'))
-					{
-						getNextToken();
-					}
-					*/
-					return expr;
+					expr = new NewExpression(className, parseExpressions());
 				}
 			}
 		}
@@ -459,44 +456,25 @@ public class KotosakaParser {
 			// Recursive call of fields or methods.
 			if (token.equals('.')) {
 				getNextToken();
-				Expression expr;
 				if (leftExpression == null)
-				{
 					expr = parseName(new VariableAccess(name));
-				}
 				else
-				{
 					expr = parseName(new FieldAccess(leftExpression, name));
-				}
-				return expr;
 			}
 
 			// Call of a function or a method.
 			else if (token.equals('(')) {
 				getNextToken();
-				Expression expr;
 				if (leftExpression == null)
-				{
 					expr = new FunctionCall(name, parseExpressions());
-				}
 				else
-				{
 					expr = new MethodCall(leftExpression, name, parseExpressions());
-				}
-				/*
-				if (token.equals(';'))
-				{
-					getNextToken();
-				}
-				*/
-				return expr;
 			}
 
 			// Assignment of value into a field or a variable.
 			// (Only if '=' does not appear twice continuously.)
 			else if (token.equals('=') && !checkNextToken().equals('=')) {
 				getNextToken();
-				Expression expr;
 				Expression assignExpr;
 
 				// Anonymous function
@@ -513,34 +491,28 @@ public class KotosakaParser {
 					assignExpr = parseExpression();
 				}
 				if (leftExpression == null)
-				{
 					expr = new VariableAssign(name, assignExpr);
-				}
 				else
-				{
 					expr = new FieldAssign(leftExpression, name, assignExpr);
-				}
-				/*
-				if (token.equals(';'))
-				{
-					getNextToken();
-				}
-				*/
-				return expr;
 			}
 
 			// Access to a field or a variable
 			else if (token.getTag() == Tag.tagSymbol) {
-				/*
-				if (token.equals(';'))
-				{
-					getNextToken();
-				}
-				*/
 				if (leftExpression == null)
-					return new VariableAccess(name);
-				return new FieldAccess(leftExpression, name);
+					expr = new VariableAccess(name);
+				else
+					expr = new FieldAccess(leftExpression, name);
 			}
+		}
+
+		if (expr != null) {
+			if (token.equals('.')) {
+				getNextToken();
+				if (token.getTag() == Tag.tagName) {
+					return parseName(expr);
+				}
+			}
+			return expr;
 		}
 
 		// Parse error: unknown token
@@ -600,6 +572,11 @@ public class KotosakaParser {
 				}
 				return makeOperation('<', expr, parseExpression());
 			}
+
+		else if (token.equals('.')) {
+			getNextToken();
+			return parseName(expr);
+		}
 
 		return expr;
 	}
@@ -684,6 +661,18 @@ public class KotosakaParser {
 			}
 			getNextToken();
 			return expr;
+		}
+
+		// bracket
+		if (token.equals('[')) {
+			getNextToken();
+			List<Expression> expr = parseExpressions();
+			if (!token.equals(']')) {
+				// パースエラー: 閉じていない括弧
+				return null;
+			}
+			getNextToken();
+			return new MatrixLiteral(expr);
 		}
 
 		// literal

@@ -10,10 +10,17 @@ public class AddExpression extends CalcExpression {
 
 	public Object evaluate(Context context) {
 		super.evaluate(context);
-		if (getNumber()) {
-			return Float.valueOf(op1f + op2f);
+		if (prepareCalc()) {
+			if (op1m != null && op2m != null)
+				return op1m.sum(op2m);
+			if (op1v != null && op2v != null)
+				return op1v.sum(op2v);
+			if (op1f != null && op2f != null)
+				return Float.valueOf(op1f + op2f);
 		}
-		return (op1 == null ? "" : op1.toString()) +
-			(op2 == null ? "" : op2.toString());
+		String text = "";
+		if (op1 != null) text += op1.toString();
+		if (op2 != null) text += op2.toString();
+		return text;
 	}
 }

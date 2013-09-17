@@ -9,19 +9,19 @@ import jp.junkato.kotosaka.Context;
  * Method call
  */
 public class MethodCall extends Expression {
-	public MethodCall(Expression expression, String method_name, List<Expression> argument_list){
+	public MethodCall(Expression expression, String methodName, List<Expression> argumentList){
 
-		Object[] arguments = new Object[argument_list.size()];
-		for(int i = 0; i < argument_list.size(); i ++) arguments[i] = argument_list.get(i);
+		Object[] arguments = new Object[argumentList.size()];
+		for(int i = 0; i < argumentList.size(); i ++) arguments[i] = argumentList.get(i);
 
 		operands.add(expression);
-		operands.add(method_name);
+		operands.add(methodName);
 		operands.add(arguments);
 	}
 
 	public Object evaluate(Context context) {
 		Expression expression = (Expression) operands.get(0);
-		String method_name = (String) operands.get(1);
+		String methodName = (String) operands.get(1);
 		Object[] expressions = (Object[]) operands.get(2);
 
 		// expressionはVariableAccess型かFieldAccess型で、
@@ -46,31 +46,48 @@ public class MethodCall extends Expression {
 				params[i] = arguments[i] == null ? Object.class : arguments[i].getClass();
 			}
 
-			// TODO temporary walkaround, 後で直す必要あり
-			//	int型を使うメソッドでInteger型の値を持つオブジェクトを渡すとエラーが出るため、
-			//	アドホックに修正した模様
 			if (arguments[i] instanceof Integer) {
 				params[i] = int.class;
+			} else if (arguments[i] instanceof Float) {
+				params[i] = float.class;
 			}
 		}
 
+		// クラスを取得
+		Class<?> cls = object.getClass();
+		Method method = findMethod(cls, methodName, params, 0);
+
+		// メソッドを実行
 		try {
-			// クラスを取得
-			Class<?> cls = object.getClass();
-			// メソッドを取得
-			//	元コメント「スーパークラスも探す必要あり」
-			Method method = cls.getMethod(method_name, params);
+			return method.invoke(object, arguments);
+		} catch (Exception e) {
+	    	System.err.println("Method \"" + methodName + "\" not found.");
+	    	return null;
+		}
+	}
 
-			// cls.getSuperclass();
-			// TODO search for methods which accept arguments consisting of super classes of the original arguments.
+	private Method findMethod(Class<?> cls, String methodName, Class<?>[] params, int i) {
+		if (i >= params.length) {
+			return findMethod(cls, methodName, params);
+		}
+		Class<?> paramClass = params[i];
+		while (paramClass != null) {
+			params[i] = paramClass;
+			Method method = findMethod(cls, methodName, params, i + 1);
+			if (method != null) return method;
+			paramClass = paramClass.getSuperclass();
+		}
+		return null;
+	}
 
-			// メソッドを実行
-			Object ret = method.invoke(object, arguments);
-			return ret;
-	    } catch (Exception e) {
-	    	e.printStackTrace();
-	    	System.err.println("Method \"" + method_name + "\" not found.");
-	    }
-	    return null;
+	private Method findMethod(Class<?> cls, String methodName, Class<?>[] params) {
+		while (cls != null) {
+			try {
+				return cls.getMethod(methodName, params);
+			} catch (NoSuchMethodException e) {
+				cls = cls.getSuperclass();
+			}
+		}
+		return null;
 	}
 }

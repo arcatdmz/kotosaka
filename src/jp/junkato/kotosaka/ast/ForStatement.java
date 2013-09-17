@@ -14,6 +14,7 @@ public class ForStatement extends Statement {
 		operands.add(c);
 		operands.add(instructions);
 	}
+	@SuppressWarnings("unchecked")
 	public Object evaluate(Context context) {
 		Expression a = (Expression) operands.get(0);
 		Expression b = (Expression) operands.get(1);

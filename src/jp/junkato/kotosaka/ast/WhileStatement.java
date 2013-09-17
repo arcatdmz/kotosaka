@@ -12,6 +12,7 @@ public class WhileStatement extends Statement {
 		operands.add(expr);
 		operands.add(instructions);
 	}			
+	@SuppressWarnings("unchecked")
 	public Object evaluate(Context context) {
 		Expression expr = (Expression) operands.get(0);
 		List<Evaluator> instructions = (List<Evaluator>) operands.get(1);

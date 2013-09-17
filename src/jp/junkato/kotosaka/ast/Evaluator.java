@@ -9,24 +9,24 @@ import jp.junkato.kotosaka.Context;
  */
 public abstract class Evaluator {
 	private final String DEFAULT_CLASSNAME_PREFIX =
-		"class jp.designinterface.kotosaka.evaluator.";
+		"class jp.junkato.kotosaka.ast.";
 	protected List<Object> operands = new ArrayList<Object>();
 	protected Evaluator() {};
 
 	public abstract Object evaluate(Context context);
 	public Object getOperand(int index) { return operands.get(index); }
-	public String toString() { return get_classname()+operands.toString(); }
-	private String get_classname() {
-		String classname = this.getClass().toString();
-		if (classname.startsWith(
+	public String toString() { return getClassName()+operands.toString(); }
+	private String getClassName() {
+		String className = this.getClass().toString();
+		if (className.startsWith(
 				DEFAULT_CLASSNAME_PREFIX))
 		{
-			return classname.substring(
+			return className.substring(
 					DEFAULT_CLASSNAME_PREFIX.length());
 		}
 		else
 		{
-			return classname;
+			return className;
 		}
 	}
 }

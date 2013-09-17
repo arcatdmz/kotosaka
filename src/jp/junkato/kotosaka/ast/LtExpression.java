@@ -10,7 +10,8 @@ public class LtExpression extends BoolExpression {
 
 	public Boolean evaluate(Context context) {
 		super.evaluate(context);
-		if (!super.get_int()) return null;
-		return Boolean.valueOf(op1i < op2i);
+		if (!prepareCalc()) return null;
+		if (op1f == null && op2f == null) return null;
+		return Boolean.valueOf(op1f < op2f);
 	}
 }

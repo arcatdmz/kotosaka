@@ -20,6 +20,7 @@ public class ForeachStatement  extends Statement {
 		operands.add(exceptions);
 	}
 
+	@SuppressWarnings("unchecked")
 	public Object evaluate(Context context){
 		String variableName = (String) operands.get(0);
 		List<Variable> list = (List<Variable>) (context.getVariable((String) operands.get(1))).value;

@@ -17,6 +17,7 @@ public class IfStatement extends Statement {
 		operands.add(instructions);
 		operands.add(instructions_else);
 	}
+	@SuppressWarnings("unchecked")
 	public Object evaluate(Context context) {
 		Expression expr = (Expression) operands.get(0);
 		Context localContext;
